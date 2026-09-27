@@ -1,7 +1,42 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { supabase } from './supabaseClient';
 
 function HomeContent() {
+    const categories = [
+        { id: 1, name: "épicerie salée", image: "/images/epicerie-salee.jpg" },
+        { id: 2, name: "épicerie sucrée", image: "/images/epicerie-sucree.jpg" },
+        { id: 3, name: "épices & herbes de cuisine", image: "/images/epices-herbes.jpg" }
+    ]
+
+    {/* تعريف المتغير لحفظ المنتجات وحالة التحميل */ }
+
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true)
+
+    {/* جلب المنتجات من Supabase عند تحميل الصفحة */ }
+    useEffect(() => {
+        fetchProducts();
+    }, [])
+    async function fetchProducts() {
+        try {
+            const { data, error } = await supabase
+                .from('products')
+                .select("*");
+
+            if (error) {
+                console.error('error fetching products:', error);
+            } else {
+                setProducts(data || []);
+            }
+        } catch (error) {
+            console.error('Unexpected error:', error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
     return (
         <div className="min-h-screen text-gray-800 flex flex-col">
             <div className="w-80 bg-[#E6D5C3] h-[450px] w-full flex flex-col items-center pt-2 gap-6">
@@ -100,13 +135,106 @@ function HomeContent() {
                 </div>
             </div>
 
-            {/* الجزء الخاص بالمنتجات */}
+            {/* قسم الاقسام */}
 
-            <div className="w-full h-96 flex justify-center items-center">
-                <h1>hello world</h1>
+            <div className="w-full max-w-[90%] mx-auto my-8">
+                <h2 className="text-2xl font-bold mb-6 text-gray-600 text-right">الاقسام</h2>
+                <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+                    {categories.map((cat) => (
+                        <div key={cat.id}
+                            className="flex bg-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition cursor-pointer border border-gray-100"
+                        >
+                            {/* 1. مستطيل الصورة (اليمين) */}
+
+                            <div className="w-1/2 h-full bg-gray-200">
+                                <img
+                                    src={cat.image}
+                                    alt={cat.name}
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
+
+                            {/* 2. المستطيل الأخضر (اسم القسم - اليسار) */}
+
+                            <div className="w-1/2 h-full bg-emerald-800 flex items-center justify-center p-2">
+                                <span className="text-white font-semibold text-center text-sm">
+                                    {cat.name}
+                                </span>
+                            </div>
+                        </div>
+
+                    )
+                    )}
+                </div>
             </div>
 
-            {/* الجزء الخاص بالـ footer (تم تصحيح وتنسيق الهيكل بالكامل) */}
+            {/* قسم المنتجات */}
+
+            <div className="w-full max-w-[90%] mx-auto my-12">
+                <h2 className="text-right text-2xl font-bold text-gray-800 mb-6">المنتجات</h2>
+
+                {/* شبكة المنتجات (تتوسع تلقائياً مع كل منتج جديد) */}
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                    {products.map((product) => (
+                        <div
+                            key={product.id}
+                            className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition flex flex-col justify-between border border-gray-100"
+                        >
+                            <div>
+
+                                {/* صورة المنتج */}
+
+                                <div className='h-52 bg-gray-50 rounded-xl p-2 overflow-hidden mb-4 flex items-center justify-center'>
+                                    <img
+                                        src={product.image}
+                                        alt={product.name}
+                                        className="h-full object-cover"
+                                    />
+                                </div>
+
+                                {/* اسم المنتج */}
+
+                                <h3 className='font-normal text-gray-800 text-center mb-1 text-xs sm:text-sm'>
+                                    {product.name}
+                                </h3>
+
+                                {/*  السعر  */}
+
+                                <p className='text-gray-900 font bold text-center mb-4 text-sm'>
+                                    {product.price}دج
+                                </p>
+
+                                {/* ازرار التحكم */}
+
+                                <div className="bg-[#222222] text-white rounded-xl p-3 flex items-center justify-between text-xs gap-2">
+                                    {/* الجزء الأيمن: أزرار التحكم بالكمية (+ / -) */}
+                                    <div className="flex items-center gap-2 bg-white/10 rounded-lg p-1">
+                                        <button className="w-6 h-6 hover:bg-white/20 rounded-md flex items-center justify-center transition">
+                                            -
+                                        </button>
+                                        <span className="font-medium px-1">1</span>
+                                        <button className="w-6 h-6 hover:bg-white/20 rounded-md flex items-center justify-center transition">
+                                            +
+                                        </button>
+                                    </div>
+
+                                    {/* الجزء الأيسر: زر الإضافة إلى السلة */}
+                                    <Link
+                                        to={`/checkout/${product.id}`}
+                                        className="bg-transparent hover:text-emerald-400 transition font-medium px-2 text-right inline-block"
+                                    >
+                                        اضف الى سلتي
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    )
+                    )}
+                </div>
+            </div>
+
+            {/* الجزء الخاص بالـ footer */}
 
             <footer className="w-full bg-[#4C4B39] text-white py-12 px-6 md:px-16">
                 <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-start" dir="rtl">
