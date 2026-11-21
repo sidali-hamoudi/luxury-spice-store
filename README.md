@@ -1,16 +1,22 @@
-# React + Vite
+# Luxury spice store
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern e-comerce storefront for spices and culinary herbs, built with React and Vite.
 
-Currently, two official plugins are available:
+##Project Status: On Hold (Awaiting Client Content)
+The core frontend structure, layout, and initial components are set up and functional. Development is currently paused while waiting  for the client to provide the final product catalog, descriptions, pricing, and product images.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features Implemented So far
+- Modern storefront layout and navigation
+- responsive product display structure
+- Clean component-based architecture
 
-## React Compiler
+## Tech Stack
+- **Frontend:** React, JavaScript / JSX, Vite
+- **Styling:** CSS / Tailwind CSS
+- **Linting: **ESLint
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Getting Started
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+'''bash
+npm install
+npm run dev
